@@ -35,6 +35,7 @@ public class FuelDatePickerFragment extends DialogFragment implements DatePicker
         // Do something on date change.
         // Do nothing for now. Probably with intents in the future.
         //cant do this apparently. TextView textView = (TextView) findViewById(R.id.date_textView_add_entry);
+        // datepicker listener TODO: implement this
     }
 
 }

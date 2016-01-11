@@ -117,7 +117,7 @@ public class FuelLogEntry {
         stringBuilder.append(odometer/10);
         stringBuilder.append('.');
         stringBuilder.append(odometer%10);
-        stringBuilder.append("km");
+        stringBuilder.append(" km");
         return stringBuilder.toString();
     }
 
@@ -132,7 +132,7 @@ public class FuelLogEntry {
         stringBuilder.append((amount/100)%10);
         stringBuilder.append((amount/10)%10);
         stringBuilder.append(amount%10);
-        stringBuilder.append('L');
+        stringBuilder.append(" L");
         return stringBuilder.toString();
     }
 
@@ -141,7 +141,7 @@ public class FuelLogEntry {
         stringBuilder.append(unitCost/10);
         stringBuilder.append('.');
         stringBuilder.append(unitCost%10);
-        stringBuilder.append("c/L");
+        stringBuilder.append(" ¢/L");
         return stringBuilder.toString();
     }
 

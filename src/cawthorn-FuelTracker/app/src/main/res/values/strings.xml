@@ -8,4 +8,10 @@
     <string name="edit_button">Edit</string>
     <string name="confirm_button">Confirm</string>
     <string name="cancel_button">Cancel</string>
+    <string name="odometer_text">Odometer:</string>
+    <string name="amount_text">Amount:</string>
+    <string name="station_text">Station:</string>
+    <string name="grade_text">Fuel grade:</string>
+    <string name="unit_cost_text">Unit cost:</string>
+    <string name="date_text">Date:</string>
 </resources>

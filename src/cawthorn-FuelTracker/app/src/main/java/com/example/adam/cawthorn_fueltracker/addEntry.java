@@ -35,10 +35,10 @@ public class addEntry extends ActionBarActivity {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(year);
         stringBuilder.append('-');
-        if((month + 1) / 10 == 0) stringBuilder.append('0');
+        if(month + 1 < 10) stringBuilder.append('0');
         stringBuilder.append(month + 1);
         stringBuilder.append('-');
-        if(day/10 == 0) stringBuilder.append('0');
+        if(day < 10) stringBuilder.append('0');
         stringBuilder.append(day);
 
         TextView textView = (TextView) findViewById(R.id.date_textView_add_entry);
@@ -54,7 +54,7 @@ public class addEntry extends ActionBarActivity {
 
     public void confirmAddition(View view) {
 
-
+        // TODO: this
 
     }
 
