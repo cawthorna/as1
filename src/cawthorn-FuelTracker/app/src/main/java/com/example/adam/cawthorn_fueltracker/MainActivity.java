@@ -18,26 +18,35 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.ListIterator;
 
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
     protected final static String FUELLOGFILE = "fuel_log_store";
+    static final int GET_FUEL_ENTRY_OBJECT = 1;
 
-    protected ArrayList<FuelLogEntry> FuelLogList;
+    protected ArrayList<FuelLogEntry> FuelLogList = new ArrayList<FuelLogEntry>();
+    protected ListViewArrayAdapter adapter;
+    protected ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setTitle("Fuel Tracker");
+
         setContentView(R.layout.activity_main);
 
-        FuelLogList = loadFuelLog();
+        loadFuelLog();
 
-        ListView listView = (ListView) findViewById(R.id.listview);
+        listView = (ListView) findViewById(R.id.listview);
 
-        ListViewArrayAdapter adapter = new ListViewArrayAdapter(this,FuelLogList);
+        adapter = new ListViewArrayAdapter(this,FuelLogList);
 
         listView.setAdapter(adapter);
 
@@ -47,6 +56,7 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -60,21 +70,42 @@ public class MainActivity extends ActionBarActivity {
         //Start add entry activity on click
         if(id == R.id.action_add_entry){
             Intent intent = new Intent(this, addEntry.class);
-            startActivity(intent);
-
-            //FuelLogList = loadFuelLog();
+            startActivityForResult(intent, GET_FUEL_ENTRY_OBJECT);
         }
 
         if(id == R.id.action_refresh) {
-            FuelLogList = loadFuelLog();
+            loadFuelLog();
+            adapter.notifyDataSetChanged();
+            listView.invalidateViews();
+            Toast.makeText(this,"View Refreshed",Toast.LENGTH_SHORT).show();
+        }
+
+        if(id == R.id.action_resetFile) {
+            File file = new File(getFilesDir(), FUELLOGFILE);
+            if(file.exists()) file.delete();
+            loadFuelLog();
+            adapter.notifyDataSetChanged();
+            listView.invalidateViews();
+            Toast.makeText(this, "File rebuilt", Toast.LENGTH_SHORT).show();
         }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Toast.makeText(this,"Not implemented yet. Maybe in the future though...",Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == GET_FUEL_ENTRY_OBJECT) {
+            if(resultCode == RESULT_OK) {
+                FuelLogList.add((FuelLogEntry) data.getSerializableExtra("FuelLogEntry"));
+            }
+        }
+        adapter.notifyDataSetChanged();
+        listView.invalidateViews();
     }
 
     public class ListDisplay extends Activity {
@@ -90,8 +121,8 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private ArrayList<FuelLogEntry> loadFuelLog() {
-        FuelLogList = new ArrayList<FuelLogEntry>();
+    private void loadFuelLog() {
+        FuelLogList.clear();
 
         try {
             File file = new File(getFilesDir(), FUELLOGFILE);
@@ -135,6 +166,6 @@ public class MainActivity extends ActionBarActivity {
             System.out.println("FuelLogEntry class not found");
             ex.printStackTrace();
         }
-        return FuelLogList;
+        Collections.sort(FuelLogList);
     }
 }

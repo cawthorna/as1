@@ -8,7 +8,7 @@ import java.util.Calendar;
  * Created by Adam on 2016-01-06.
  * Stores information on each fuel log entry
  */
-public class FuelLogEntry implements Serializable {
+public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
     private int year, month, day;
     private String station;
     private int odometer;
@@ -38,7 +38,7 @@ public class FuelLogEntry implements Serializable {
 
     public boolean setYear(int year) {
         Calendar cal = Calendar.getInstance();
-        if(year < 1000 || year > cal.get(Calendar.YEAR)) {
+        if(false){//year < 1000 || year > cal.get(Calendar.YEAR)) { //TODO: validation.
             return false;
         }
         this.year = year;
@@ -46,7 +46,8 @@ public class FuelLogEntry implements Serializable {
     }
 
     public boolean setMonth(int month) {
-        if(month < 1 || month > 12) {
+        if(false){//month < 0 || month > 11) { //TODO: validation.
+            // zero indexed month.
             return false;
         }
         this.month = month;
@@ -54,7 +55,7 @@ public class FuelLogEntry implements Serializable {
     }
 
     public boolean setDay(int day) {
-        if(day < 1 || day > 31) {
+        if(false){//day < 1 || day > 31) { //TODO: validation.
             return false;
         }
         this.day = day;
@@ -99,11 +100,23 @@ public class FuelLogEntry implements Serializable {
 
     // Getter Methods
 
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
     public String getDate() {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append(year);
         strBuilder.append('-');
-        strBuilder.append(month);
+        strBuilder.append(month + 1);
         strBuilder.append('-');
         strBuilder.append(day);
         return strBuilder.toString();
@@ -120,6 +133,11 @@ public class FuelLogEntry implements Serializable {
         stringBuilder.append(odometer%10);
         stringBuilder.append(" km");
         return stringBuilder.toString();
+    }
+
+    // used for comparator.
+    public int getOdometerInt() {
+        return odometer;
     }
 
     public String getGrade() {
@@ -159,6 +177,23 @@ public class FuelLogEntry implements Serializable {
     public boolean updateCost() {
         this.cost = unitCost * amount;
         return true;
+    }
+
+    public int compareTo(FuelLogEntry fuelLogEntry) {
+
+        if(this.year < fuelLogEntry.getYear()) return -1;
+        else if(this.year > fuelLogEntry.getYear()) return 1;
+        else {
+            if(this.month < fuelLogEntry.getMonth()) return -1;
+            else if(this.month > fuelLogEntry.getMonth()) return 1;
+            else {
+                if(this.day < fuelLogEntry.getDay()) return -1;
+                if(this.day > fuelLogEntry.getDay()) return 1;
+                else {
+                    return 0;
+                }
+            }
+        }
     }
 
 }

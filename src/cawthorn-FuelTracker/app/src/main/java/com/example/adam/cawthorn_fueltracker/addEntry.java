@@ -30,17 +30,18 @@ public class addEntry extends ActionBarActivity  implements DatePickerDialog.OnD
 
     private int year, month, day;
     private String station;
-    private int odometer;
+    private double odometer;
     private String grade;
-    private int amount;
-    private int unitCost;
-    private int cost;
+    private double amount;
+    private double unitCost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_entry);
+
+        setTitle("Add Fuel Up");
 
         Calendar cal = Calendar.getInstance();
         year = cal.get(Calendar.YEAR);
@@ -69,19 +70,32 @@ public class addEntry extends ActionBarActivity  implements DatePickerDialog.OnD
     }
 
     public void confirmAddition(View view) {
-        // TODO: this
         // save to file and return.
         EditText editText = (EditText) findViewById(R.id.station_edittext);
         station = editText.getText().toString();
         editText = (EditText) findViewById(R.id.odometer_edittext);
-        odometer = Integer.getInteger(editText.getText().toString(), 0);
+        if(editText.getText().toString().length() > 0) {
+            odometer = Double.parseDouble(editText.getText().toString());
+        } else {
+            odometer = 9999;
+        }
         editText = (EditText) findViewById(R.id.grade_edittext);
         grade = editText.getText().toString();
         editText = (EditText) findViewById(R.id.amount_edittext);
-        amount = Integer.getInteger(editText.getText().toString(), 0);
+        if(editText.getText().toString().length() > 0) {
+            amount = Double.parseDouble(editText.getText().toString());
+        } else {
+            amount = 999999;
+        }
         editText = (EditText) findViewById(R.id.unit_cost_edittext);
-        unitCost = Integer.getInteger(editText.getText().toString(), 0);
+        if(editText.getText().toString().length() > 0) {
+            unitCost = Double.parseDouble(editText.getText().toString());
+        } else {
+            unitCost = 99990;
+        }
 
+        // need to append new entry to the list.
+        // due to the limitations of object store no entries can be appended, so the entire file must be remade.
         FuelLogEntry newEntry = new FuelLogEntry(year, month, day, station, odometer, grade, amount, unitCost);
         ArrayList<FuelLogEntry> FuelLogList = loadFuelLog();
         FuelLogList.add(newEntry);
@@ -99,9 +113,12 @@ public class addEntry extends ActionBarActivity  implements DatePickerDialog.OnD
         } catch (IOException exc) {
             exc.printStackTrace();
         }
-        finish();
-        // TODO: find a way to pass an object back.
 
+        // TODO: find a way to pass an object back.
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("FuelLogEntry",newEntry);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     public void cancelAddition(View view) {
