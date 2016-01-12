@@ -1,5 +1,6 @@
 package com.example.adam.cawthorn_fueltracker;
 
+import java.io.Serializable;
 import java.lang.Math;
 import java.util.Calendar;
 
@@ -7,7 +8,7 @@ import java.util.Calendar;
  * Created by Adam on 2016-01-06.
  * Stores information on each fuel log entry
  */
-public class FuelLogEntry {
+public class FuelLogEntry implements Serializable {
     private int year, month, day;
     private String station;
     private int odometer;
