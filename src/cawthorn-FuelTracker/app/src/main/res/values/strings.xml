@@ -14,4 +14,5 @@
     <string name="grade_text">Fuel grade:</string>
     <string name="unit_cost_text">Unit cost:</string>
     <string name="date_text">Date:</string>
+    <string name="title_activity_edit_entry">Edit Entry</string>
 </resources>

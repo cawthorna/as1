@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.ListIterator;
 
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -118,6 +120,12 @@ public class MainActivity extends ActionBarActivity {
 
             ListView listView = (ListView)  findViewById(R.id.listview);
             listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //TODO: finish this.
+                }
+            });
         }
     }
 
