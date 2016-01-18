@@ -1,15 +1,9 @@
 package com.example.adam.cawthorn_fueltracker;
 
 import android.app.DatePickerDialog;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.DatePicker;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
 
@@ -26,6 +20,6 @@ public class FuelDatePickerFragment extends DialogFragment {
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
-        return new DatePickerDialog(getActivity(),(addEntry)getActivity(), year, month, day);
+        return new DatePickerDialog(getActivity(),(editEntry)getActivity(), year, month, day);
     }
 }

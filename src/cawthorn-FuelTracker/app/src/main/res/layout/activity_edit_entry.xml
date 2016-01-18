@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".addEntry"
+    tools:context=".editEntry"
     android:id="@+id/add_entry">
 
     <LinearLayout
@@ -45,7 +45,8 @@
 
                 <EditText
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    tools:ignore="Suspicious0dp" />
 
             </LinearLayout>
 

@@ -2,17 +2,18 @@
     <string name="app_name">cawthorn-FuelTracker</string>
     <string name="action_settings">Settings</string>
     <string name="send">Send</string>
-    <string name="message_hint">Enter a message!</string>
     <string name="title_activity_display_message">Display_message</string>
     <string name="add_entry">Add Fuel Up</string>
     <string name="edit_button">Edit</string>
     <string name="confirm_button">Confirm</string>
     <string name="cancel_button">Cancel</string>
-    <string name="odometer_text">Odometer:</string>
-    <string name="amount_text">Amount:</string>
+    <string name="odometer_text">Odometer (km):</string>
+    <string name="amount_text">Amount (L):</string>
     <string name="station_text">Station:</string>
     <string name="grade_text">Fuel grade:</string>
-    <string name="unit_cost_text">Unit cost:</string>
+    <string name="unit_cost_text">Unit cost (¢/L):</string>
     <string name="date_text">Date:</string>
     <string name="title_activity_edit_entry">Edit Entry</string>
+    <string name="total_cost">Total Cost:</string>
+    <string name="total_amount">Total Amount:</string>
 </resources>

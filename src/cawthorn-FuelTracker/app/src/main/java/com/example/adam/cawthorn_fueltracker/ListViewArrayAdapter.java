@@ -35,7 +35,7 @@ public class ListViewArrayAdapter extends ArrayAdapter<FuelLogEntry> {
 
         // Populate Amount
         textView = (TextView) rowView.findViewById(R.id.listview_textviewAmount);
-        textView.setText(FuelLogList.get(position).getAmount());
+        textView.setText(FuelLogList.get(position).getFormattedAmount());
 
         // Populate Cost
         textView = (TextView) rowView.findViewById(R.id.listview_textviewCost);
@@ -47,7 +47,7 @@ public class ListViewArrayAdapter extends ArrayAdapter<FuelLogEntry> {
 
         // Populate Odometer
         textView = (TextView) rowView.findViewById(R.id.listview_textviewOdometer);
-        textView.setText(FuelLogList.get(position).getOdometer());
+        textView.setText(FuelLogList.get(position).getFormattedOdometer());
 
         // Populate Station
         textView = (TextView) rowView.findViewById(R.id.listview_textviewStation);
@@ -55,7 +55,7 @@ public class ListViewArrayAdapter extends ArrayAdapter<FuelLogEntry> {
 
         // Populate Unit Cost
         textView = (TextView) rowView.findViewById(R.id.listview_textviewUnitCost);
-        textView.setText(FuelLogList.get(position).getUnitCost());
+        textView.setText(FuelLogList.get(position).getFormattedUnitCost());
 
         return rowView;
     }

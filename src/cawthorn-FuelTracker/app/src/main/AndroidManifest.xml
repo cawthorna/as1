@@ -26,9 +26,6 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".addEntry"
-            android:label="@string/title_activity_display_message" />
-        <activity
             android:name=".editEntry"
             android:label="@string/title_activity_edit_entry"
             android:parentActivityName=".MainActivity">

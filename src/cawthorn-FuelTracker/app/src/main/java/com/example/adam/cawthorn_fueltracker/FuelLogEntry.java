@@ -3,6 +3,7 @@ package com.example.adam.cawthorn_fueltracker;
 import java.io.Serializable;
 import java.lang.Math;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Adam on 2016-01-06.
@@ -29,16 +30,20 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
 
     // Setter Methods
 
-    public boolean setDate(int year, int month, int day) {
-        if(!setYear(year)) return false;
-        if(!setMonth(month)) return false;
-        if(!setDay(day)) return false;
-        return true;
+    public int setDate(int year, int month, int day) {
+        Calendar cal = Calendar.getInstance();
+        Calendar date = Calendar.getInstance();
+        date.set(year, month, day);
+        if(date.after(cal))  return -4;
+        if(!setYear(year)) return -1;
+        if(!setMonth(month)) return -2;
+        if(!setDay(day)) return -3;
+        return 1;
     }
 
     public boolean setYear(int year) {
         Calendar cal = Calendar.getInstance();
-        if(false){//year < 1000 || year > cal.get(Calendar.YEAR)) { //TODO: validation.
+        if(year > cal.get(Calendar.YEAR)) {
             return false;
         }
         this.year = year;
@@ -46,7 +51,7 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
     }
 
     public boolean setMonth(int month) {
-        if(false){//month < 0 || month > 11) { //TODO: validation.
+        if(month < 0 || month > 11) {
             // zero indexed month.
             return false;
         }
@@ -55,7 +60,7 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
     }
 
     public boolean setDay(int day) {
-        if(false){//day < 1 || day > 31) { //TODO: validation.
+        if(day < 0 || day > 31) {
             return false;
         }
         this.day = day;
@@ -63,12 +68,13 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
     }
 
     public boolean setStation(String station) {
+        if(station.length() <= 0) return false;
         this.station = station;
         return true;
     }
 
     public boolean setOdometer(double odometer) {
-        if(odometer < 0) {
+        if((int) (odometer * 10) <= 0) {
             return false;
         }
         this.odometer = (int) (odometer * 10);
@@ -76,12 +82,13 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
     }
 
     public boolean setGrade(String grade) {
+        if(grade.length() <= 0) return false;
         this.grade = grade;
         return true;
     }
 
     public boolean setAmount(double amount) {
-        if(amount < 0 ) {
+        if((int) (amount * 1000) <= 0 ) {
             return false;
         }
         this.amount = (int) (amount * 1000);
@@ -90,7 +97,7 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
     }
 
     public boolean setUnitCost(double unitCost) {
-        if(unitCost < 0) {
+        if((int) (unitCost * 10) <= 0) {
             return false;
         }
         this.unitCost = (int) (unitCost * 10);
@@ -126,7 +133,7 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
         return station;
     }
 
-    public String getOdometer() {
+    public String getFormattedOdometer() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(odometer/10);
         stringBuilder.append('.');
@@ -135,16 +142,19 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
         return stringBuilder.toString();
     }
 
-    // used for comparator.
-    public int getOdometerInt() {
-        return odometer;
+    public String getOdometer() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(odometer/10);
+        stringBuilder.append('.');
+        stringBuilder.append(odometer%10);
+        return stringBuilder.toString();
     }
 
     public String getGrade() {
         return grade;
     }
 
-    public String getAmount() {
+    public String getFormattedAmount() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(amount/1000);
         stringBuilder.append('.');
@@ -155,7 +165,21 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
         return stringBuilder.toString();
     }
 
-    public String getUnitCost() {
+    public String getAmount() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(amount/1000);
+        stringBuilder.append('.');
+        stringBuilder.append((amount/100)%10);
+        stringBuilder.append((amount/10)%10);
+        stringBuilder.append(amount%10);
+        return stringBuilder.toString();
+    }
+
+    public int getIntAmount() {
+        return amount;
+    }
+
+    public String getFormattedUnitCost() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(unitCost/10);
         stringBuilder.append('.');
@@ -164,21 +188,34 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
         return stringBuilder.toString();
     }
 
-    public String getCost() {
+    public String getUnitCost() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append('$');
-        stringBuilder.append(cost/1000000);
+        stringBuilder.append(unitCost/10);
         stringBuilder.append('.');
-        stringBuilder.append((cost/100000)%10);
-        stringBuilder.append((cost/10000)%10);
+        stringBuilder.append(unitCost%10);
         return stringBuilder.toString();
     }
 
+    public String getCost() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append('$');
+        stringBuilder.append(cost/100);
+        stringBuilder.append('.');
+        stringBuilder.append((cost/10)%10);
+        stringBuilder.append(cost%10);
+        return stringBuilder.toString();
+    }
+
+    public int getIntCost() {
+        return cost;
+    }
+
     public boolean updateCost() {
-        this.cost = unitCost * amount;
+        this.cost = (unitCost * amount) / 10000;
         return true;
     }
 
+    // Comparator for sorting.
     public int compareTo(FuelLogEntry fuelLogEntry) {
 
         if(this.year < fuelLogEntry.getYear()) return -1;
