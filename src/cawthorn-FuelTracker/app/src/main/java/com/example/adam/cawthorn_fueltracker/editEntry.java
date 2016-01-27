@@ -11,8 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class editEntry extends ActionBarActivity  implements DatePickerDialog.OnDateSetListener {
-
-    FuelLogEntry fuelLogEntry;
+    private FuelLogEntry fuelLogEntry;
     private int position;
     private int dateCode = 1;
 

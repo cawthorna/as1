@@ -20,7 +20,7 @@ public class ClearFileDialogFragment extends DialogFragment {
         void onClearFileDialogNegativeClick(DialogFragment dialogFragment);
     }
 
-    ClearFileDialogListener clearFileDialogListener;
+    public ClearFileDialogListener clearFileDialogListener;
 
     //adapted from http://developer.android.com/guide/topics/ui/dialogs.html
     @Override

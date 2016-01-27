@@ -30,19 +30,23 @@ import java.util.Collections;
 
 public class MainActivity extends ActionBarActivity implements ClearFileDialogFragment.ClearFileDialogListener {
 
+    // Final Variables
+    public static final int NEW_FUEL_ENTRY_OBJECT = 1;
+    public static final int EDIT_FUEL_ENTRY_OBJECT = 2;
+
     protected final static String FUEL_LOG_STORE = "fuel_log_store";
     protected final static String INTENT_DATA = "FuelLogEntry";
     protected final static String REQUEST_CODE = "requestCode";
     protected final static String FUEL_LOG_LIST_POSITION = "fuelLogListPosition";
-    static final int NEW_FUEL_ENTRY_OBJECT = 1;
-    static final int EDIT_FUEL_ENTRY_OBJECT = 2;
-    private static final boolean DEVELOPER = true;
 
-    protected ArrayList<FuelLogEntry> FuelLogList = new ArrayList<FuelLogEntry>();
+    private static final boolean DEVELOPER = false;
+
+    // Global Variables
+    protected ArrayList<FuelLogEntry> fuelLogList = new ArrayList<FuelLogEntry>();
     protected ListViewArrayAdapter adapter;
     protected ListView listView;
-    protected long total_cost;
-    protected int total_amount;
+    protected long totalCost;
+    protected int totalAmount;
 
     /* Android activity lifecycle methods. */
 
@@ -163,9 +167,9 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
         /* Returned from adding a new entry. Append the new entry to the FuelLogEntries ArrayList, then update the totals. */
         if(requestCode == NEW_FUEL_ENTRY_OBJECT) {
             if(resultCode == RESULT_OK) {
-                FuelLogList.add((FuelLogEntry) data.getSerializableExtra(INTENT_DATA));
-                total_cost += (((FuelLogEntry) data.getSerializableExtra(INTENT_DATA)).getIntCost());
-                total_amount += ((FuelLogEntry) data.getSerializableExtra(INTENT_DATA)).getIntAmount();
+                fuelLogList.add((FuelLogEntry) data.getSerializableExtra(INTENT_DATA));
+                totalCost += (((FuelLogEntry) data.getSerializableExtra(INTENT_DATA)).getLongCost());
+                totalAmount += ((FuelLogEntry) data.getSerializableExtra(INTENT_DATA)).getLongAmount();
             }
         }
         /* Returned from editing an entry. Update the edited entry at the correct position, then update the totals. */
@@ -173,16 +177,16 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
             if(resultCode == RESULT_OK) {
                 int index = data.getIntExtra(FUEL_LOG_LIST_POSITION, -1);
                 if(index >= 0) {
-                    FuelLogList.set(index, (FuelLogEntry) data.getSerializableExtra(INTENT_DATA));
-                    total_cost += (((FuelLogEntry) data.getSerializableExtra(INTENT_DATA)).getIntCost());
-                    total_amount += ((FuelLogEntry) data.getSerializableExtra(INTENT_DATA)).getIntAmount();
+                    fuelLogList.set(index, (FuelLogEntry) data.getSerializableExtra(INTENT_DATA));
+                    totalCost += (((FuelLogEntry) data.getSerializableExtra(INTENT_DATA)).getLongCost());
+                    totalAmount += ((FuelLogEntry) data.getSerializableExtra(INTENT_DATA)).getLongAmount();
                 }
             } else {
                 int index = data.getIntExtra(FUEL_LOG_LIST_POSITION, -1);
                 if(index >= 0) {
                     FuelLogEntry temp = (FuelLogEntry) listView.getItemAtPosition(index);
-                    total_amount += temp.getIntAmount();
-                    total_cost += temp.getIntCost();
+                    totalAmount += temp.getLongAmount();
+                    totalCost += temp.getLongCost();
                 }
             }
         }
@@ -223,13 +227,34 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
     }
 
     //Class methods
+    /** Builds and starts the intent for editing a list item at the specified position.
+     * onClick method for the ListView
+     *  @param position position in the ListView of the item clicked.
+     */
+    public void listItemClicked(int position) {
+
+        FuelLogEntry clickedItem = (FuelLogEntry) listView.getItemAtPosition(position);
+        // build intent with clickedItem, then pass with the edit flag to edit activity.
+        Intent intent = new Intent(MainActivity.this, editEntry.class);
+
+        intent.putExtra(INTENT_DATA,clickedItem);
+        intent.putExtra(REQUEST_CODE,EDIT_FUEL_ENTRY_OBJECT);
+        intent.putExtra(FUEL_LOG_LIST_POSITION, position);
+
+        totalAmount -= clickedItem.getLongAmount();
+        totalCost -= clickedItem.getLongCost();
+
+        startActivityForResult(intent, EDIT_FUEL_ENTRY_OBJECT);
+    }
+
+
     /** Loads the fuel log from disk, and updates the total cost and amount.
      *
      */
     private void loadFuelLog() {
-        FuelLogList.clear();
-        total_cost = 0;
-        total_amount = 0;
+        fuelLogList.clear();
+        totalCost = 0;
+        totalAmount = 0;
 
         try {
 
@@ -237,13 +262,13 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
             Gson gson = new Gson();
             // below from http://google-gson.googlecode.com/svn/tags/1.1.1/docs/javadocs/com/google/gson/reflect/TypeToken.html
-            FuelLogList = gson.fromJson(bufferedReader, new TypeToken<ArrayList<FuelLogEntry>>() {}.getType());
+            fuelLogList = gson.fromJson(bufferedReader, new TypeToken<ArrayList<FuelLogEntry>>() {}.getType());
             bufferedReader.close();
             fileInputStream.close();
 
-            for (FuelLogEntry entry: FuelLogList) {
-                total_amount += entry.getIntAmount();
-                total_cost += entry.getIntCost();
+            for (FuelLogEntry entry: fuelLogList) {
+                totalAmount += entry.getLongAmount();
+                totalCost += entry.getLongCost();
             }
 
         } catch (FileNotFoundException ex) {
@@ -274,7 +299,7 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
 
             updateHeader();
 
-            adapter = new ListViewArrayAdapter(this,FuelLogList);
+            adapter = new ListViewArrayAdapter(this, fuelLogList);
             listView.setAdapter(adapter);
         }
     }
@@ -288,7 +313,7 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
             FileOutputStream fileOutputStream = openFileOutput(FUEL_LOG_STORE, MODE_PRIVATE);
             BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
             Gson gson = new Gson();
-            gson.toJson(FuelLogList,outputStream);
+            gson.toJson(fuelLogList,outputStream);
             outputStream.close();
             fileOutputStream.close();
 
@@ -298,25 +323,6 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
 
     }
 
-    /** Builds and starts the intent for editing a list item at the specified position.
-     *  @param position position in the ListView of the item clicked.
-     */
-    public void listItemClicked(int position) {
-
-        FuelLogEntry clickedItem = (FuelLogEntry) listView.getItemAtPosition(position);
-        // build intent with clickedItem, then pass with the edit flag to edit activity.
-        Intent intent = new Intent(MainActivity.this, editEntry.class);
-
-        intent.putExtra(INTENT_DATA,clickedItem);
-        intent.putExtra(REQUEST_CODE,EDIT_FUEL_ENTRY_OBJECT);
-        intent.putExtra(FUEL_LOG_LIST_POSITION, position);
-
-        total_amount -= clickedItem.getIntAmount();
-        total_cost -= clickedItem.getIntCost();
-
-        startActivityForResult(intent, EDIT_FUEL_ENTRY_OBJECT);
-    }
-
     /** Builds the strings for insertion into the header for total cost and amount.
      *
      */
@@ -324,11 +330,11 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
 
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(total_amount / 1000);
+        stringBuilder.append(totalAmount / 1000);
         stringBuilder.append('.');
-        stringBuilder.append((total_amount / 100) % 10);
-        stringBuilder.append((total_amount / 10) % 10);
-        stringBuilder.append(total_amount % 10);
+        stringBuilder.append((totalAmount / 100) % 10);
+        stringBuilder.append((totalAmount / 10) % 10);
+        stringBuilder.append(totalAmount % 10);
         stringBuilder.append(" L");
 
         TextView textView = (TextView) findViewById(R.id.main_total_amount);
@@ -336,10 +342,10 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
 
         stringBuilder = new StringBuilder();
         stringBuilder.append('$');
-        stringBuilder.append(total_cost / (long) 100);
+        stringBuilder.append(totalCost / (long) 100);
         stringBuilder.append('.');
-        stringBuilder.append((total_cost / (long) 10)% 10);
-        stringBuilder.append(total_cost % 10);
+        stringBuilder.append((totalCost / (long) 10)% 10);
+        stringBuilder.append(totalCost % 10);
 
         textView = (TextView) findViewById(R.id.main_total_cost);
         textView.setText(stringBuilder.toString());
@@ -351,17 +357,17 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
      */
     private void addSampleData() {
         for (int i = 0; i < 16; i++) {
-            FuelLogList.add(new FuelLogEntry(2000 + i, 2, 3, "Abc", 200000.2 + i, "regular", 2, 100));
+            fuelLogList.add(new FuelLogEntry(2000 + i, 2, 3, "Abc", 200000.2 + i, "regular", 2, 100));
         }
         saveFuelLog();
         loadFuelLog();
     }
 
-    /** Sorts the entries in the FuelLogList by date, then saves from disk to make it persistent
+    /** Sorts the entries in the fuelLogList by date, then saves from disk to make it persistent
      * not required by assignment spec, but figured it would be nice to have.
      */
     private void sortFuelLogList() {
-        Collections.sort(FuelLogList);
+        Collections.sort(fuelLogList);
         saveFuelLog();
         adapter.notifyDataSetChanged();
     }

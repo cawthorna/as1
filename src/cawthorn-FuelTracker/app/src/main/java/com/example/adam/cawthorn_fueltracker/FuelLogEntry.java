@@ -275,9 +275,9 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
 
     /**
      *
-     * @return amount int in Liters * 1000 for 3 decimal places.
+     * @return amount long in Liters * 1000 for 3 decimal places.
      */
-    public long getIntAmount() {
+    public long getLongAmount() {
         return amount;
     }
 
@@ -322,9 +322,9 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
 
     /**
      *
-     * @return int of cost * 100 (in cents)
+     * @return long of cost * 100 (in cents)
      */
-    public long getIntCost() {
+    public long getLongCost() {
         return cost;
     }
 
