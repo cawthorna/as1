@@ -24,40 +24,48 @@ public class ListViewArrayAdapter extends ArrayAdapter<FuelLogEntry> {
         this.FuelLogList = FuelLogList;
     }
 
+    /**
+     * Builds the FuelLogEntry display objects for the ListView.
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return View
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.listview_item, parent, false);
-
+       if(convertView == null) {
+           LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+           convertView = inflater.inflate(R.layout.listview_item, parent, false);
+       }
         // Populate Date
-        TextView textView = (TextView) rowView.findViewById(R.id.listview_textviewDate);
+        TextView textView = (TextView) convertView.findViewById(R.id.listview_textviewDate);
         textView.setText(FuelLogList.get(position).getDate());
 
         // Populate Amount
-        textView = (TextView) rowView.findViewById(R.id.listview_textviewAmount);
+        textView = (TextView) convertView.findViewById(R.id.listview_textviewAmount);
         textView.setText(FuelLogList.get(position).getFormattedAmount());
 
         // Populate Cost
-        textView = (TextView) rowView.findViewById(R.id.listview_textviewCost);
+        textView = (TextView) convertView.findViewById(R.id.listview_textviewCost);
         textView.setText(FuelLogList.get(position).getCost());
 
         // Populate Fuel Grade
-        textView = (TextView) rowView.findViewById(R.id.listview_textviewFuelGrade);
+        textView = (TextView) convertView.findViewById(R.id.listview_textviewFuelGrade);
         textView.setText(FuelLogList.get(position).getGrade());
 
         // Populate Odometer
-        textView = (TextView) rowView.findViewById(R.id.listview_textviewOdometer);
+        textView = (TextView) convertView.findViewById(R.id.listview_textviewOdometer);
         textView.setText(FuelLogList.get(position).getFormattedOdometer());
 
         // Populate Station
-        textView = (TextView) rowView.findViewById(R.id.listview_textviewStation);
+        textView = (TextView) convertView.findViewById(R.id.listview_textviewStation);
         textView.setText(FuelLogList.get(position).getStation());
 
         // Populate Unit Cost
-        textView = (TextView) rowView.findViewById(R.id.listview_textviewUnitCost);
+        textView = (TextView) convertView.findViewById(R.id.listview_textviewUnitCost);
         textView.setText(FuelLogList.get(position).getFormattedUnitCost());
 
-        return rowView;
+        return convertView;
     }
 
 

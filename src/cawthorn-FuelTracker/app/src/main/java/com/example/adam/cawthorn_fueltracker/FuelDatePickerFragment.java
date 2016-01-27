@@ -9,7 +9,8 @@ import java.util.Calendar;
 
 /**
  * Created by Adam on 2016-01-06.
- *
+ *  @return Dialog
+ *  creates a DatePickerDialog and sets it to today's date, then returns.
  */
 public class FuelDatePickerFragment extends DialogFragment {
 

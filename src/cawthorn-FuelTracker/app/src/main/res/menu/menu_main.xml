@@ -6,22 +6,23 @@
     <item
         android:id="@+id/action_add_entry"
         android:orderInCategory="1"
-        android:title="@string/add_entry"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_refresh"
-        android:orderInCategory="2"
-        android:title="Refresh"/>
+        android:title="@string/action_add_entry"
+        app:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_add"/>
 
     <item
         android:id="@+id/action_resetFile"
-        android:orderInCategory="3"
-        android:title="Rebuild file" />
+        android:orderInCategory="2"
+        android:title="@string/action_clear_entries" />
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/action_sort_entries"
+        android:orderInCategory="3"
+        android:title="@string/action_sort_data" />
+
+    <item
+        android:id="@+id/action_add_sample_data"
+        android:orderInCategory="4"
+        android:title="@string/action_add_sample_data" />
+
 </menu>

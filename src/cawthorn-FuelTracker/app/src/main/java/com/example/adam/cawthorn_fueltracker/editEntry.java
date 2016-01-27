@@ -10,19 +10,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.ListIterator;
-
 public class editEntry extends ActionBarActivity  implements DatePickerDialog.OnDateSetListener {
 
     FuelLogEntry fuelLogEntry;
@@ -35,22 +22,22 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_entry);
 
-        setTitle("Edit Fuel Up");
-
         // Get data from Intent
         Intent intent = getIntent();
         fuelLogEntry = (FuelLogEntry) intent.getSerializableExtra(MainActivity.INTENT_DATA);
         int requestCode = intent.getIntExtra(MainActivity.REQUEST_CODE, 0);
 
+        // Set Date to default to the entries date and make it clickable.
         TextView textView = (TextView) findViewById(R.id.date_textView_add_entry);
         textView.setText(fuelLogEntry.getDate());
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                showDatePickerDialog(v);
+            public void onClick(View view) {
+                showDatePickerDialog(view);
             }
         });
 
+        // If we are editing an entry set all fields to the old values, otherwise leave blank.
         if(requestCode == MainActivity.EDIT_FUEL_ENTRY_OBJECT) {
             EditText editText = (EditText) findViewById(R.id.station_edittext);
             editText.setText(fuelLogEntry.getStation());
@@ -63,6 +50,7 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
             editText = (EditText) findViewById(R.id.unit_cost_edittext);
             editText.setText(fuelLogEntry.getUnitCost());
 
+            // Get position so it can be sent back for proper placement.
             position = intent.getIntExtra(MainActivity.FUEL_LOG_LIST_POSITION, -1);
 
         }
@@ -85,7 +73,7 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
     public void confirmAddition(View view) {
         EditText editText;
 
-        // Check Date
+        // Check to see if date is valid
         if(dateCode < 0) {
             if(dateCode == -4) {
                 Toast.makeText(this,"Error: Date is after today",Toast.LENGTH_SHORT).show();
@@ -99,7 +87,7 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
             return;
         }
 
-        // Check Odometer
+        // Check Odometer to see if it is valid. (not blank and > 0)
         editText = (EditText) findViewById(R.id.odometer_edittext);
         if(editText.getText().toString().length() > 0) {
             if(!fuelLogEntry.setOdometer(Double.parseDouble(editText.getText().toString()))) {
@@ -111,7 +99,7 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
             return;
         }
 
-        // Check Amount
+        // Check Amount to see if it is valid. (not blank and > 0)
         editText = (EditText) findViewById(R.id.amount_edittext);
         if(editText.getText().toString().length() > 0) {
             if(!fuelLogEntry.setAmount(Double.parseDouble(editText.getText().toString()))) {
@@ -123,14 +111,14 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
             return;
         }
 
-        // Check Station
+        // Check if Station is valid. (not blank)
         editText= (EditText) findViewById(R.id.station_edittext);
-        if(!fuelLogEntry.setStation(editText.getText().toString())) {
+        if(!fuelLogEntry.setStation(editText.getText().toString().trim())) {
             Toast.makeText(this,"Error: Station cannot be blank.",Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Check Unit Cost
+        // Check Unit Cost to see if it is valid. (not blank and > 0)
         editText = (EditText) findViewById(R.id.unit_cost_edittext);
         if(editText.getText().toString().length() > 0) {
             if(!fuelLogEntry.setUnitCost(Double.parseDouble(editText.getText().toString()))) {
@@ -142,9 +130,9 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
             return;
         }
 
-        // Check Fuel Grade
+        // Check if Fuel Grade is valid. (not blank)
         editText = (EditText) findViewById(R.id.grade_edittext);
-        if(!fuelLogEntry.setGrade(editText.getText().toString())) {
+        if(!fuelLogEntry.setGrade(editText.getText().toString().trim())) {
             Toast.makeText(this,"Error: Grade cannot be blank.",Toast.LENGTH_SHORT).show();
             return;
         }

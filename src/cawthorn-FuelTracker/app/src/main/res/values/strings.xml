@@ -1,19 +1,36 @@
 <resources>
     <string name="app_name">cawthorn-FuelTracker</string>
-    <string name="action_settings">Settings</string>
-    <string name="send">Send</string>
-    <string name="title_activity_display_message">Display_message</string>
-    <string name="add_entry">Add Fuel Up</string>
-    <string name="edit_button">Edit</string>
+
+<!-- Menu Strings -->
+    <string name="action_add_entry">Add Fuel Up</string>
+    <string name="action_add_sample_data">Add Sample Entries</string>
+    <string name="action_sort_data">Sort Entries</string>
+    <string name="action_clear_entries">Clear Entries</string>
+
+<!-- MainActivity Strings -->
+    <string name="total_cost">Total Cost:</string>
+    <string name="total_amount">Total Amount:</string>
+    <string name="clear_entries_toast">Log cleared</string>
+
+<!-- editEntry Strings -->
+
+    <string name="title_activity_edit_entry">Edit Entry</string>
+
+    <!-- Button Text -->
     <string name="confirm_button">Confirm</string>
     <string name="cancel_button">Cancel</string>
+
+    <!-- TextView Strings -->
     <string name="odometer_text">Odometer (km):</string>
     <string name="amount_text">Amount (L):</string>
     <string name="station_text">Station:</string>
     <string name="grade_text">Fuel grade:</string>
     <string name="unit_cost_text">Unit cost (¢/L):</string>
     <string name="date_text">Date:</string>
-    <string name="title_activity_edit_entry">Edit Entry</string>
-    <string name="total_cost">Total Cost:</string>
-    <string name="total_amount">Total Amount:</string>
+
+<!-- ClearFileDialogFragment Strings -->
+    <string name="clear_entries_confirmation">Clear all entries?</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+
 </resources>
