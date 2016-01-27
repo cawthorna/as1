@@ -36,7 +36,7 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
     protected final static String FUEL_LOG_LIST_POSITION = "fuelLogListPosition";
     static final int NEW_FUEL_ENTRY_OBJECT = 1;
     static final int EDIT_FUEL_ENTRY_OBJECT = 2;
-    private static final boolean DEBUG = true;
+    private static final boolean DEVELOPER = true;
 
     protected ArrayList<FuelLogEntry> FuelLogList = new ArrayList<FuelLogEntry>();
     protected ListViewArrayAdapter adapter;
@@ -44,7 +44,11 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
     protected long total_cost;
     protected int total_amount;
 
-    // Android activity lifecycle methods.
+    /* Android activity lifecycle methods. */
+
+     /** Overwritten onCreate method
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,20 +70,31 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
 
     }
 
-    // Called when the activity is started. Loads the fuel log from disk
+    /** Overwritten onStart method
+     * Called when the activity is started. Loads the fuel log from disk
+     *
+     */
     @Override
     public void onStart() {
         super.onStart();
         loadFuelLog();
     }
 
-    // Called when the activity is stopped, saves the current information to disk.
+    /** Overwritten onStop method
+     * Called when the activity is stopped, saves the current information to disk.
+     *
+     */
     @Override
     public void onStop() {
         super.onStop();
         saveFuelLog();
     }
 
+    /** Overwritten onCreateOptionsMenu method
+     * Creates the options menu when the user touches for the options menu
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -88,11 +103,16 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
         // if not in debug, hide the add dummy data option.
         // adapted from http://stackoverflow.com/questions/10692755/how-do-i-hide-a-menu-item-in-the-actionbar
         //noinspection PointlessBooleanExpression
-        if (!DEBUG) menu.findItem(R.id.action_add_sample_data).setVisible(false);
+        if (!DEVELOPER) menu.findItem(R.id.action_add_sample_data).setVisible(false);
 
         return true;
     }
 
+    /** Overwritten onOptionsItemSelected method
+     * called when the user touches an item in the options menu.
+     * @param item the item selected by the user.
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -117,7 +137,9 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
             dialogFragment.show(getFragmentManager(), "clear_entries");
         }
 
-        /* Adds dummy data for testing and examples */
+        /* Adds dummy data for testing and examples
+        *  this is hidden for production.
+        */
         if(id == R.id.action_add_sample_data) {
             addSampleData();
         }
@@ -130,6 +152,12 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
         return super.onOptionsItemSelected(item);
     }
 
+    /**Overwritten onActivityResult method
+     * called when the activity called by startActivityForResult() call finishes (when the called activity is finished)
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         /* Returned from adding a new entry. Append the new entry to the FuelLogEntries ArrayList, then update the totals. */
@@ -165,6 +193,11 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
     }
 
     // Interface methods for ClearFileDialogFragment
+
+    /** Positive click interface method for the clear logs dialog
+     *
+     * @param dialogFragment
+     */
     @Override
     public void onClearFileDialogPositiveClick(DialogFragment dialogFragment) {
         File file = new File(getFilesDir(), FUEL_LOG_STORE);
@@ -174,20 +207,24 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
             }
         }
 
-        loadFuelLog();
+        //loadFuelLog();
         loadFuelLog();
         adapter.notifyDataSetChanged();
         Toast.makeText(this, R.string.clear_entries_toast, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Negative click interface method for the clear logs dialog
+     * @param dialogFragment
+     */
     @Override
     public void onClearFileDialogNegativeClick(DialogFragment dialogFragment) {
         // Do nothing, user canceled.
     }
 
     //Class methods
-    /*
-        Loads the fuel log from disk, and updates the total cost and amount.
+    /** Loads the fuel log from disk, and updates the total cost and amount.
+     *
      */
     private void loadFuelLog() {
         FuelLogList.clear();
@@ -208,17 +245,30 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
                 total_amount += entry.getIntAmount();
                 total_cost += entry.getIntCost();
             }
-            
 
         } catch (FileNotFoundException ex) {
 
             // The file does not exist. create it and return an empty list.
-            // should only happen first run.
-            System.out.println("File not found, creating new one. " + FUEL_LOG_STORE);
             saveFuelLog();
 
         } catch(IOException  ex) {
-            throw new RuntimeException();
+            // Cant load log. remake it.
+            File file = new File(getFilesDir(), FUEL_LOG_STORE);
+            if(file.exists()) {
+                if(!file.delete()) {
+                    System.out.println("Could not delete file \"" + FUEL_LOG_STORE + "\".");
+                }
+            }
+
+        } catch(RuntimeException ex) {
+
+            // Cant load log. remake it.
+            File file = new File(getFilesDir(), FUEL_LOG_STORE);
+            if(file.exists()) {
+                if(!file.delete()) {
+                    System.out.println("Could not delete file \"" + FUEL_LOG_STORE + "\".");
+                }
+            }
 
         } finally {
 
@@ -229,7 +279,7 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
         }
     }
 
-    /*
+    /**
         Saves the fuel log to disk.
      */
     private void saveFuelLog() {
@@ -248,8 +298,8 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
 
     }
 
-    /*
-        Builds and starts the intent for editing a list item at the specified position.
+    /** Builds and starts the intent for editing a list item at the specified position.
+     *  @param position position in the ListView of the item clicked.
      */
     public void listItemClicked(int position) {
 
@@ -267,12 +317,11 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
         startActivityForResult(intent, EDIT_FUEL_ENTRY_OBJECT);
     }
 
-    /*
-        Builds the strings for insertion into the header for total cost and amount.
+    /** Builds the strings for insertion into the header for total cost and amount.
+     *
      */
     private void updateHeader() {
 
-        Toast.makeText(MainActivity.this,"Total_cost_$: " + total_cost,Toast.LENGTH_LONG).show();
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(total_amount / 1000);
@@ -296,9 +345,9 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
         textView.setText(stringBuilder.toString());
     }
 
-    /*
-        Adds sample data for testing purposes.
-        Method caller is hidden when not in debug mode.
+    /**
+     *  Adds sample data for testing purposes.
+     *  Method caller is hidden from the options menu when not in developer mode.
      */
     private void addSampleData() {
         for (int i = 0; i < 16; i++) {
@@ -308,8 +357,8 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
         loadFuelLog();
     }
 
-    /*
-        Sorts the entries in the FuelLogList by date, then saves from disk to make it persistent
+    /** Sorts the entries in the FuelLogList by date, then saves from disk to make it persistent
+     * not required by assignment spec, but figured it would be nice to have.
      */
     private void sortFuelLogList() {
         Collections.sort(FuelLogList);

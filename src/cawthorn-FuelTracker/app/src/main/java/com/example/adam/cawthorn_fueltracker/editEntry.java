@@ -16,6 +16,10 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
     private int position;
     private int dateCode = 1;
 
+    /** Overwritten onCreate method
+     * what the activity is required to do on creation
+     * @param savedInstanceState way to pass information in, not used in this subclass.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -56,6 +60,9 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
         }
     }
 
+    /** Overwritten onBackPressed method
+     * changes back button behaviour to be the same as clicking the cancel button.
+     */
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -64,12 +71,21 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
         super.onBackPressed();
     }
 
+    /**
+     * shows the custom built DatePickerDialog in the view provided.
+     * @param view
+     */
     public void showDatePickerDialog(View view) {
         FuelDatePickerFragment newFragment = new FuelDatePickerFragment();
         newFragment.show(getFragmentManager(), "datePicker");
 
     }
 
+    /**
+     * onClick method called by clicking the confirm button.
+     * Validates all information in the required fields.
+     * @param view
+     */
     public void confirmAddition(View view) {
         EditText editText;
 
@@ -103,7 +119,7 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
         editText = (EditText) findViewById(R.id.amount_edittext);
         if(editText.getText().toString().length() > 0) {
             if(!fuelLogEntry.setAmount(Double.parseDouble(editText.getText().toString()))) {
-                Toast.makeText(this,"Error: Amount is too small.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Error: Invalid amount.",Toast.LENGTH_SHORT).show();
                 return;
             }
         } else {
@@ -122,7 +138,7 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
         editText = (EditText) findViewById(R.id.unit_cost_edittext);
         if(editText.getText().toString().length() > 0) {
             if(!fuelLogEntry.setUnitCost(Double.parseDouble(editText.getText().toString()))) {
-                Toast.makeText(this,"Error: Unit cost is too small.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Error: Invalid unit cost.",Toast.LENGTH_SHORT).show();
                 return;
             }
         } else {
@@ -145,6 +161,11 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
         finish();
     }
 
+    /**
+     * onClick method for the cancel button.
+     * Cancels the addition or edit.
+     * @param view
+     */
     public void cancelAddition(View view) {
 
         Intent intent = new Intent(this, MainActivity.class);
@@ -153,6 +174,13 @@ public class editEntry extends ActionBarActivity  implements DatePickerDialog.On
         finish();
     }
 
+    /**
+     * method called by the closure of the DatePickerDialog.
+     * @param view
+     * @param year
+     * @param month
+     * @param day
+     */
     public void onDateSet(DatePicker view, int year, int month, int day) {
 
         dateCode = fuelLogEntry.setDate(year, month, day);

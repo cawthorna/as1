@@ -14,6 +14,8 @@
         android:layout_weight="1">
 
         <LinearLayout
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -43,6 +45,7 @@
                     android:layout_height="fill_parent"
                     android:onClick="showDatePickerDialog"/>
 
+                <!-- this is to get the height of the date field to match with the other heights.-->
                 <EditText
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -159,6 +162,8 @@
     </LinearLayout>
 
     <LinearLayout
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

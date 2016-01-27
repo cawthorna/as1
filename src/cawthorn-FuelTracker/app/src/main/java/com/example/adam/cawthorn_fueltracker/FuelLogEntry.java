@@ -141,7 +141,7 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
      * @return true if the amount was successfully set, false otherwise.
      */
     public boolean setAmount(double amount) {
-        if((int) (amount * 1000) <= 0 ) {
+        if((int) (amount * 1000) <= 0 || checkCost(unitCost,(long)amount * 1000)) {
             return false;
         }
         this.amount = (int) (amount * 1000);
@@ -155,7 +155,7 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
      * @return true if the unit cost was successfully set, false otherwise.
      */
     public boolean setUnitCost(double unitCost) {
-        if((int) (unitCost * 10) <= 0) {
+        if((int) (unitCost * 10) <= 0 || checkCost((int)(unitCost * 1000),amount)) {
             return false;
         }
         this.unitCost = (int) (unitCost * 10);
@@ -333,7 +333,11 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
      */
     public void updateCost() {
         // (cents * 10 /L) * mL * (1/1000 L/mL) / 10
-        this.cost = (unitCost * amount) / 10000;
+        this.cost = (((long)unitCost) * amount) / 10000;
+    }
+
+    public boolean checkCost(int unitCost, long amount) {
+        return((((long)unitCost) * amount) / 10000 > Long.MAX_VALUE);
     }
 
     /**
