@@ -58,7 +58,7 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
         super.onCreate(savedInstanceState);
 
         // Set title to make sense, not the app launcher title.
-        setTitle("Fuel Tracker");
+        setTitle("cawthorn-FuelTrack");
 
         setContentView(R.layout.activity_main);
 
