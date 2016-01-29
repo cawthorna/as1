@@ -1,10 +1,14 @@
 package com.example.adam.cawthorn_fueltracker;
 
 import android.app.Application;
+import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.ApplicationTestCase;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.IllegalFormatCodePointException;
+import java.util.List;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
@@ -19,7 +23,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2 {
     /*
      *  MainActivity Tests
      */
-    public void loadFuelLogTest() {
+    public void testLoadFuelLog() {
 
         fuelLogListTest.clear();
         fuelLogListTest.add(new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6));
@@ -28,28 +32,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2 {
         assertEquals(fuelLogListTest.get(0).getDate(), new testClass(fuelLogListTest).fuelLogList.get(0).getDate());
     }
 
-    public void saveFuelLogTest() {
-        loadFuelLogTest();
-    }
-
-    public void updateHeaderTest() {
-
-        fuelLogListTest.clear();
-        fuelLogListTest.add(new FuelLogEntry(2000,2,2,"station",123,"Regular",12.32,74.6));
-
-        long cost = fuelLogListTest.get(0).getLongCost();
-        long amount = fuelLogListTest.get(0).getLongAmount();
-
-        testClass temp = new testClass(fuelLogListTest);
-        temp.updateHeader();
-
-        assertEquals(cost, temp.totalCost);
-        assertEquals(amount,temp.totalAmount);
-
-
-    }
-
-    public void addSampleDataTest() {
+    public void testAddSampleData() {
 
         fuelLogListTest.clear();
         testClass temp = new testClass(fuelLogListTest);
@@ -60,7 +43,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2 {
 
     }
 
-    public void sortFuelLogListTest() {
+    public void testSortFuelLogList() {
 
         fuelLogListTest.clear();
         FuelLogEntry after = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
@@ -71,108 +54,224 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2 {
 
         testClass temp = new testClass(fuelLogListTest);
 
-        temp.sortFuelLogList();
-
-
-
-    }
-
-    /*
-     * editEntry Tests
-     */
-    public void confirmAdditionTest() {
-
-    }
-
-    public void cancelAdditionTest() {
-
-    }
-
-    public void onDateSetTest() {
-
+        try {
+            temp.sortFuelLogList();
+        } catch (NullPointerException ex) {
+            // Expect to be here as the adapter cannot be notified. (not available to unit tests)
+            assertTrue(before.equals(temp.fuelLogList.get(0)));
+        }
     }
 
     /*
      * FuelLogEntry Tests
      */
-    public void setDateTest() {
+    public void testSetDate() {
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        int year = 2005;
+        int month = 5;
+        int day = 5;
+        // test good set
+        fuelLogEntry.setDate(year, month, day);
+        assertTrue(fuelLogEntry.getYear() == year);
+        assertTrue(fuelLogEntry.getMonth() == month);
+        assertTrue(fuelLogEntry.getDay() == day);
+
+        //test bad year set.
+        year = -1;
+        assertEquals(-1,fuelLogEntry.setDate(year,month,day));
+        year = 2005;
+
+        //test bad month set.
+        month = -1;
+        assertEquals(fuelLogEntry.setDate(year,month,day),-2);
+        month = 5;
+
+        //test bad day set.
+        day = -1;
+        assertEquals(fuelLogEntry.setDate(year,month,day),-3);
+        day = 5;
+
+        //test after today set.
+        Calendar cal = Calendar.getInstance();
+        assertEquals(fuelLogEntry.setDate(cal.get(Calendar.YEAR) + 1, month, day),-4);
 
     }
 
-    public void setYearTest() {
+    public void testSetYear() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        int year = 2005;
+
+        // test good set
+        fuelLogEntry.setYear(year);
+        assertTrue(fuelLogEntry.getYear() == year);
+
+        //test bad set
+        assertFalse(fuelLogEntry.setYear(Calendar.getInstance().get(Calendar.YEAR)+1));
+    }
+
+    public void testSetMonth() {
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        int month = 5;
+
+        // test good month
+        fuelLogEntry.setMonth(month);
+        assertTrue(fuelLogEntry.getMonth() == month);
+
+        //test bad months
+        assertFalse(fuelLogEntry.setMonth(-1));
+        assertFalse(fuelLogEntry.setMonth(12));
+    }
+
+    public void testSetDay() {
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        int day = 5;
+
+        // test good day
+        fuelLogEntry.setDay(day);
+        assertTrue(fuelLogEntry.getDay() == day);
+
+        //test bad days
+        assertFalse(fuelLogEntry.setDay(-1));
+        assertFalse(fuelLogEntry.setDay(32));
+    }
+
+    public void testSetStation() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        String station = "different Station";
+
+        fuelLogEntry.setStation(station);
+        assertEquals(station, fuelLogEntry.getStation());
 
     }
 
-    public void setMonthTest() {
+    public void testSetOdometer() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        int odometer = 100;
+
+        fuelLogEntry.setOdometer((double) odometer);
+        assertEquals(fuelLogEntry.getOdometer(),"100.0");
 
     }
 
-    public void setDayTest() {
+    public void testSetGrade() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        String grade = "ultra";
+
+        fuelLogEntry.setGrade(grade);
+        assertEquals(fuelLogEntry.getGrade(),grade);
 
     }
 
-    public void setStation() {
+    public void testSetAmount() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        int amount = 100;
+
+        fuelLogEntry.setAmount((double) amount);
+        assertEquals(fuelLogEntry.getLongAmount(),(long)amount * 1000);
 
     }
 
-    public void setOdometerTest() {
+    public void testSetUnitCost() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        int unitCost = 100;
+
+        fuelLogEntry.setUnitCost((double) unitCost);
+        assertEquals(fuelLogEntry.getUnitCost(),"100.0");
 
     }
 
-    public void setGradeTest() {
+    public void testGetDate() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        assertEquals("2000-3-2", fuelLogEntry.getDate());
 
     }
 
-    public void setAmountTest() {
+    public void testGetFormattedOdometer() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        assertEquals("123.0 km",fuelLogEntry.getFormattedOdometer());
 
     }
 
-    public void setUnitCostTest() {
+    public void testGetOdometer() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        assertEquals("123.0",fuelLogEntry.getOdometer());
 
     }
 
-    public void getDateTest() {
+    public void testGetFormattedAmount() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        assertEquals("12.320 L",fuelLogEntry.getFormattedAmount());
 
     }
 
-    public void getFormattedOdometerTest() {
+    public void testGetAmount() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        assertEquals("12.320",fuelLogEntry.getAmount());
 
     }
 
-    public void getOdometerTest() {
+    public void testGetFormattedUnitCost() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        assertEquals("74.6 ¢/L",fuelLogEntry.getFormattedUnitCost());
 
     }
 
-    public void getFormattedAmountTest() {
+    public void testGetUnitCost() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        assertEquals("74.6",fuelLogEntry.getUnitCost());
 
     }
 
-    public void getAmountTest() {
+    public void testGetCost() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        assertEquals("$9.19",fuelLogEntry.getCost());
 
     }
 
-    public void getFormattedUnitCostTest() {
+    public void testUpdateCost() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        fuelLogEntry.setAmount(100);
+
+        assertEquals("$74.60",fuelLogEntry.getCost());
 
     }
 
-    public void getUnitCostTest() {
+    public void testCheckCost() {
+
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        assertFalse(fuelLogEntry.checkCost(Integer.MAX_VALUE,Long.MAX_VALUE));
 
     }
 
-    public void getCostTest() {
+    public void testCompareTo() {
+
+        FuelLogEntry before = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        FuelLogEntry after = new FuelLogEntry(2005, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+
+        assertEquals(1,after.compareTo(before));
 
     }
 
-    public void updateCostTest() {
+    public void testEquals() {
 
-    }
-
-    public void checkCostTest() {
-
-    }
-
-    public void compareToTest() {
-
+        FuelLogEntry fuelLogEntry = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        FuelLogEntry fuelLogEntry1 = new FuelLogEntry(2000, 2, 2, "station", 123, "Regular", 12.32, 74.6);
+        assertTrue(fuelLogEntry.equals(fuelLogEntry1));
     }
 }
 
@@ -180,8 +279,18 @@ class testClass extends MainActivity{
 
     public testClass(ArrayList<FuelLogEntry> fuelLogEntries){
         fuelLogList = fuelLogEntries;
-        saveFuelLog();
-        loadFuelLog();
+    }
+
+    @Override
+    public void saveFuelLog() {
+        // do nothing, should not access disk for testing.
+    }
+
+    @Override
+    public void loadFuelLog() {
+        //do nothing, should not access disk for testing.
     }
 
 }
+
+

@@ -67,7 +67,7 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
      */
     public boolean setYear(int year) {
         Calendar cal = Calendar.getInstance();
-        if(year > cal.get(Calendar.YEAR)) {
+        if(year > cal.get(Calendar.YEAR) || year < 0) {
             return false;
         }
         this.year = year;
