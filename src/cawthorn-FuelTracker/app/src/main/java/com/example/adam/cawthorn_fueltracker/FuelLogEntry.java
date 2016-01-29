@@ -1,5 +1,6 @@
 package com.example.adam.cawthorn_fueltracker;
 
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.Math;
 import java.util.Calendar;
@@ -358,6 +359,31 @@ public class FuelLogEntry implements Serializable, Comparable<FuelLogEntry> {
                 else {
                     return 0;
                 }
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if(object == null || object.getClass() != getClass()) return false;
+        else {
+            // its a fuel log entry, check equality.
+            FuelLogEntry fuelLogEntry = (FuelLogEntry) object;
+            //check date is equal
+            if(!this.getDate().equals(fuelLogEntry.getDate())) return false;
+            //check station equal
+            else if(!this.station.equals(fuelLogEntry.getStation())) return false;
+            //check odometer equal
+            else if(!this.getOdometer().equals(fuelLogEntry.getOdometer())) return false;
+            //check grade equal
+            else if(!this.getGrade().equals(fuelLogEntry.getGrade())) return false;
+            //check amount equal
+            else if(!this.getAmount().equals(fuelLogEntry.getAmount())) return false;
+            //check unitCost equal
+            else if(!this.getUnitCost().equals(fuelLogEntry.getUnitCost())) return false;
+            //they are equal.
+            else {
+                return true;
             }
         }
     }
