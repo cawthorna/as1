@@ -251,7 +251,7 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
     /** Loads the fuel log from disk, and updates the total cost and amount.
      *
      */
-    private void loadFuelLog() {
+    protected void loadFuelLog() {
         fuelLogList.clear();
         totalCost = 0;
         totalAmount = 0;
@@ -307,7 +307,7 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
     /**
         Saves the fuel log to disk.
      */
-    private void saveFuelLog() {
+    protected void saveFuelLog() {
 
         try {
             FileOutputStream fileOutputStream = openFileOutput(FUEL_LOG_STORE, MODE_PRIVATE);
@@ -326,7 +326,7 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
     /** Builds the strings for insertion into the header for total cost and amount.
      *
      */
-    private void updateHeader() {
+    protected void updateHeader() {
 
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -355,7 +355,7 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
      *  Adds sample data for testing purposes.
      *  Method caller is hidden from the options menu when not in developer mode.
      */
-    private void addSampleData() {
+    protected void addSampleData() {
         for (int i = 0; i < 16; i++) {
             fuelLogList.add(new FuelLogEntry(2000 + i, 2, 3, "Abc", 200000.2 + i, "regular", 2, 100));
         }
@@ -366,7 +366,7 @@ public class MainActivity extends ActionBarActivity implements ClearFileDialogFr
     /** Sorts the entries in the fuelLogList by date, then saves from disk to make it persistent
      * not required by assignment spec, but figured it would be nice to have.
      */
-    private void sortFuelLogList() {
+    protected void sortFuelLogList() {
         Collections.sort(fuelLogList);
         saveFuelLog();
         adapter.notifyDataSetChanged();
